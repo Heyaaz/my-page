@@ -10,7 +10,7 @@ export async function getFeaturedPosts(limit = 3): Promise<BlogPostSummary[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('id, slug, title, excerpt, cover_image_url, category, published_at, is_featured, reading_time')
+    .select('id, slug, title, excerpt, content, cover_image_url, category, published_at, is_featured, reading_time')
     .eq('is_published', true)
     .eq('is_featured', true)
     .order('published_at', { ascending: false })
@@ -25,7 +25,7 @@ export async function getRecentPosts(limit = 5): Promise<BlogPostSummary[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('id, slug, title, excerpt, cover_image_url, category, published_at, is_featured, reading_time')
+    .select('id, slug, title, excerpt, content, cover_image_url, category, published_at, is_featured, reading_time')
     .eq('is_published', true)
     .order('published_at', { ascending: false })
     .limit(limit)
@@ -39,7 +39,7 @@ export async function getAllPosts(): Promise<BlogPostSummary[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('id, slug, title, excerpt, cover_image_url, category, published_at, is_featured, reading_time')
+    .select('id, slug, title, excerpt, content, cover_image_url, category, published_at, is_featured, reading_time')
     .eq('is_published', true)
     .order('published_at', { ascending: false })
 

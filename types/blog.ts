@@ -19,5 +19,5 @@ export type BlogPost = {
 
 export type BlogPostSummary = Pick<
   BlogPost,
-  'id' | 'slug' | 'title' | 'excerpt' | 'cover_image_url' | 'category' | 'published_at' | 'is_featured' | 'reading_time'
+  'id' | 'slug' | 'title' | 'excerpt' | 'content' | 'cover_image_url' | 'category' | 'published_at' | 'is_featured' | 'reading_time'
 > & { tags?: Tag[] }

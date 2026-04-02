@@ -11,12 +11,12 @@ export default async function BlogPage() {
   const posts = await getAllPosts()
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-20">
-      <h1 className="text-3xl font-bold tracking-tight mb-2">Blog</h1>
-      <p className="text-neutral-500 mb-12">생각, 기록, 회고, 기술 이야기를 씁니다.</p>
+    <div className="mx-auto max-w-5xl px-6 py-20">
+      <h1 className="mb-2 text-3xl font-bold tracking-tight">Blog</h1>
+      <p className="mb-12 text-neutral-500">생각, 기록, 회고, 기술 이야기를 씁니다.</p>
 
       {posts.length === 0 ? (
-        <p className="text-neutral-400 text-sm">아직 작성된 글이 없습니다.</p>
+        <p className="text-sm text-neutral-400">아직 작성된 글이 없습니다.</p>
       ) : (
         <BlogCategoryFilter posts={posts} />
       )}
