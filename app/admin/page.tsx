@@ -4,6 +4,7 @@ import AdminEditor from '@/components/admin/AdminEditor'
 import AdminLoginForm from '@/components/admin/AdminLoginForm'
 import AdminMfaGate from '@/components/admin/AdminMfaGate'
 import AdminUnauthorized from '@/components/admin/AdminUnauthorized'
+import { getSupabasePublicKey } from '@/lib/supabase/env'
 
 export const metadata: Metadata = {
   title: 'Admin',
@@ -24,7 +25,7 @@ function getAdminAllowlist(): string[] {
 export default async function AdminPage() {
   const hasSupabase =
     !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    !!getSupabasePublicKey()
 
   if (!hasSupabase) {
     return (
