@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docker:up": "docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f home-page",
+    "docker:ps": "docker compose ps"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",

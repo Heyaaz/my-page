@@ -1,0 +1,12 @@
+services:
+  home-page:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: home-page
+    ports:
+      - "3001:3000"
+    env_file:
+      - path: .env.local
+        required: false
+    restart: unless-stopped
