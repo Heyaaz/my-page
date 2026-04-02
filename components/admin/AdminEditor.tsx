@@ -112,6 +112,11 @@ export default function AdminEditor() {
 
   const supabase = useMemo(() => createClient(), [])
   const notifyTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const selectionRef = useRef({ start: 0, end: 0 })
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [draggingImage, setDraggingImage] = useState(false)
 
   function notify(text: string, ok: boolean) {
     clearTimeout(notifyTimer.current)
@@ -127,6 +132,132 @@ export default function AdminEditor() {
       return
     }
     setPortfolio(defaultPortfolio)
+  }
+
+
+  function setCurrentContent(value: string) {
+    if (type === 'blog') {
+      setBlog((current) => ({ ...current, content: value }))
+      return
+    }
+    setPortfolio((current) => ({ ...current, content: value }))
+  }
+
+  function rememberSelection() {
+    const textarea = textareaRef.current
+    if (!textarea) return
+    selectionRef.current = {
+      start: textarea.selectionStart ?? 0,
+      end: textarea.selectionEnd ?? 0,
+    }
+  }
+
+  function insertMarkdownAtSelection(markdown: string) {
+    const { start, end } = selectionRef.current
+    const before = currentContent.slice(0, start)
+    const after = currentContent.slice(end)
+    const nextValue = `${before}${markdown}${after}`
+    const nextCursor = start + markdown.length
+
+    setCurrentContent(nextValue)
+    setPreview(false)
+
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus()
+      textareaRef.current?.setSelectionRange(nextCursor, nextCursor)
+      selectionRef.current = { start: nextCursor, end: nextCursor }
+    })
+  }
+
+  function buildImageMarkdown(url: string, label = 'image') {
+    const alt = label.replace(/\.[^.]+$/, '').trim() || 'image'
+    return `\n![${alt}](${url})\n`
+  }
+
+  async function uploadImageFile(file: File) {
+    const bucket = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET ?? 'content-images'
+    const safeName = file.name
+      .toLowerCase()
+      .replace(/[^a-z0-9.-]+/g, '-')
+      .replace(/-+/g, '-')
+    const path = `${type}/${Date.now()}-${crypto.randomUUID()}-${safeName}`
+
+    const { error } = await supabase.storage
+      .from(bucket)
+      .upload(path, file, { cacheControl: '3600', upsert: false })
+
+    if (error) {
+      notify(`이미지 업로드에 실패했습니다. Supabase Storage bucket(기본값: ${bucket})과 정책을 확인해주세요.`, false)
+      return null
+    }
+
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path)
+    return data.publicUrl
+  }
+
+  async function insertImageFiles(files: File[]) {
+    const imageFiles = files.filter((file) => file.type.startsWith('image/'))
+    if (imageFiles.length === 0) return
+
+    setUploadingImage(true)
+    const markdowns: string[] = []
+
+    for (const file of imageFiles) {
+      const publicUrl = await uploadImageFile(file)
+      if (!publicUrl) {
+        setUploadingImage(false)
+        return
+      }
+      markdowns.push(buildImageMarkdown(publicUrl, file.name))
+    }
+
+    insertMarkdownAtSelection(markdowns.join(''))
+    notify('이미지를 업로드하고 본문에 삽입했습니다.', true)
+    setUploadingImage(false)
+  }
+
+  function handleDroppedUrl(raw: string) {
+    const value = raw.trim()
+    if (!/^https?:\/\//.test(value)) return false
+    insertMarkdownAtSelection(buildImageMarkdown(value, 'image'))
+    notify('이미지 링크를 본문에 삽입했습니다.', true)
+    return true
+  }
+
+  async function handleTextareaDrop(event: React.DragEvent<HTMLTextAreaElement>) {
+    event.preventDefault()
+    setDraggingImage(false)
+    rememberSelection()
+
+    const files = Array.from(event.dataTransfer.files ?? [])
+    if (files.length > 0) {
+      await insertImageFiles(files)
+      return
+    }
+
+    const uri = event.dataTransfer.getData('text/uri-list') || event.dataTransfer.getData('text/plain')
+    handleDroppedUrl(uri)
+  }
+
+  async function handleTextareaPaste(event: React.ClipboardEvent<HTMLTextAreaElement>) {
+    const files = Array.from(event.clipboardData.files ?? [])
+    if (files.length === 0) return
+
+    event.preventDefault()
+    rememberSelection()
+    await insertImageFiles(files)
+  }
+
+  function openImagePicker() {
+    fileInputRef.current?.click()
+  }
+
+  async function handleFileInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files ?? [])
+    event.target.value = ''
+    if (files.length === 0) return
+    rememberSelection()
+    await insertImageFiles(files)
   }
 
   async function handleSignOut() {
@@ -672,25 +803,50 @@ export default function AdminEditor() {
                 )}
 
                 <div className="mt-8">
-                  <div className="mb-2 flex items-center justify-between">
+                  <div className="mb-2 flex items-center justify-between gap-3">
                     <span className="text-sm font-medium text-neutral-700">본문</span>
-                    <div className="flex gap-1">
-                      {([{ label: '작성', value: false }, { label: '미리보기', value: true }] as const).map((tab) => (
-                        <button
-                          key={tab.label}
-                          type="button"
-                          onClick={() => setPreview(tab.value)}
-                          className={`rounded-full px-3 py-1 text-xs transition-colors ${
-                            preview === tab.value
-                              ? 'bg-neutral-900 text-white'
-                              : 'text-neutral-500 hover:text-neutral-900'
-                          }`}
-                        >
-                          {tab.label}
-                        </button>
-                      ))}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={openImagePicker}
+                        disabled={uploadingImage}
+                        className="rounded-full border border-neutral-200 px-3 py-1 text-xs text-neutral-600 transition-colors hover:border-neutral-400 hover:text-neutral-900 disabled:opacity-50"
+                      >
+                        {uploadingImage ? '이미지 업로드 중...' : '이미지 업로드'}
+                      </button>
+                      <div className="flex gap-1">
+                        {([{ label: '작성', value: false }, { label: '미리보기', value: true }] as const).map((tab) => (
+                          <button
+                            key={tab.label}
+                            type="button"
+                            onClick={() => setPreview(tab.value)}
+                            className={`rounded-full px-3 py-1 text-xs transition-colors ${
+                              preview === tab.value
+                                ? 'bg-neutral-900 text-white'
+                                : 'text-neutral-500 hover:text-neutral-900'
+                            }`}
+                          >
+                            {tab.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileInputChange}
+                    className="hidden"
+                  />
+
+                  {!preview && (
+                    <p className="mb-3 text-xs text-neutral-400">
+                      이미지를 드래그하거나 붙여넣으면 현재 커서 위치에 Markdown 이미지가 삽입됩니다.
+                    </p>
+                  )}
 
                   {preview ? (
                     <div className="min-h-80 rounded-2xl border border-neutral-200 p-8">
@@ -698,17 +854,21 @@ export default function AdminEditor() {
                     </div>
                   ) : (
                     <textarea
+                      ref={textareaRef}
                       value={currentContent}
-                      onChange={(event) => {
-                        const value = event.target.value
-                        if (type === 'blog') {
-                          setBlog((current) => ({ ...current, content: value }))
-                          return
-                        }
-                        setPortfolio((current) => ({ ...current, content: value }))
+                      onChange={(event) => setCurrentContent(event.target.value)}
+                      onSelect={rememberSelection}
+                      onClick={rememberSelection}
+                      onKeyUp={rememberSelection}
+                      onDragOver={(event) => {
+                        event.preventDefault()
+                        setDraggingImage(true)
                       }}
+                      onDragLeave={() => setDraggingImage(false)}
+                      onDrop={handleTextareaDrop}
+                      onPaste={handleTextareaPaste}
                       placeholder="Markdown으로 작성하세요. # 제목, **굵게**, - 목록, ```코드블록``` 등 사용 가능."
-                      className="w-full min-h-80 resize-none rounded-2xl border border-neutral-200 p-6 font-mono text-sm leading-relaxed text-neutral-700 transition-colors focus:border-neutral-400 focus:outline-none"
+                      className={`w-full min-h-80 resize-none rounded-2xl border p-6 font-mono text-sm leading-relaxed text-neutral-700 transition-colors focus:border-neutral-400 focus:outline-none ${draggingImage ? 'border-neutral-900 bg-neutral-50' : 'border-neutral-200'}`}
                     />
                   )}
                 </div>

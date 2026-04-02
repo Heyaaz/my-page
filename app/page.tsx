@@ -17,21 +17,21 @@ export default async function HomePage() {
       <section className="min-h-[90svh] flex flex-col justify-center max-w-5xl mx-auto px-6 pt-12 pb-24">
         <div className="max-w-3xl">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 mb-8">
-            Developer · Builder
+            Backend Developer
           </p>
           <h1
             className="text-5xl md:text-7xl font-bold tracking-tighter leading-[1.05] text-neutral-950 mb-8"
             style={{ wordBreak: 'keep-all' }}
           >
-            코드로 만들고,<br />
-            글로 기록합니다.
+            구조를 설계하고,<br />
+            시스템을 만듭니다.
           </h1>
           <p
             className="text-lg md:text-xl text-neutral-500 leading-relaxed max-w-xl mb-12"
             style={{ wordBreak: 'keep-all' }}
           >
-            소프트웨어 개발자 Heeyaa입니다. 문제를 구조적으로 풀고,
-            그 과정을 솔직하게 기록합니다.
+            백엔드 개발자 Heeyaa입니다. 복잡한 문제를 구조적으로 풀고,
+            안정적으로 운영 가능한 서비스를 고민하고 구현합니다.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -43,9 +43,10 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 px-7 py-3.5 border border-neutral-200 text-neutral-700 text-sm font-medium rounded-full hover:border-neutral-500 hover:text-neutral-900 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-white border border-neutral-200 text-neutral-900 text-sm font-medium rounded-full hover:border-neutral-400 hover:bg-neutral-50 transition-all duration-300"
             >
-              글 보기
+              블로그 보기
+              <ArrowRight />
             </Link>
           </div>
         </div>
@@ -136,15 +137,15 @@ export default async function HomePage() {
               className="text-3xl font-bold tracking-tight text-neutral-950 mb-6 leading-snug"
               style={{ wordBreak: 'keep-all' }}
             >
-              구조를 먼저 보고,<br />
-              빠르게 검증합니다.
+              병목을 찾고,<br />
+              구조를 개선합니다.
             </h2>
             <p
               className="text-neutral-500 leading-relaxed mb-6"
               style={{ wordBreak: 'keep-all' }}
             >
-              복잡한 문제를 작게 쪼개고, 작동하는 것부터 만들어 나갑니다.
-              완벽한 설계보다 반복 가능한 구조를 선호합니다.
+              실제 서비스에서 성능과 안정성 문제를 다루며,
+              쿼리 구조 재설계와 N+1 해결, 구조 개선 같은 작업을 꾸준히 해왔습니다.
             </p>
             <Link
               href="/about"
@@ -156,10 +157,10 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: '관심 분야', value: '프로덕트 개발' },
-              { label: '주력 스택', value: 'TypeScript · Next.js' },
-              { label: '작업 방식', value: '구조 → 검증 → 반복' },
-              { label: '현재 관심사', value: 'AI 응용 · 개발 도구' },
+              { label: '관심 분야', value: '백엔드 시스템 · 프로덕트' },
+              { label: '주력 스택', value: 'Java · Spring · TypeScript' },
+              { label: '강점', value: '성능 최적화 · 구조 개선' },
+              { label: '현재 관심사', value: 'AI 활용 워크플로우 · 개발 생산성' },
             ].map((item) => (
               <div key={item.label} className="p-4 bg-neutral-50 rounded-xl">
                 <p className="text-xs text-neutral-400 mb-1">{item.label}</p>
@@ -180,10 +181,10 @@ export default async function HomePage() {
               className="text-2xl md:text-3xl font-bold text-white tracking-tight mb-3 leading-snug"
               style={{ wordBreak: 'keep-all' }}
             >
-              함께 만들고 싶은 것이 있나요?
+              함께 해결할 문제가 있나요?
             </h2>
             <p className="text-neutral-400 text-sm leading-relaxed" style={{ wordBreak: 'keep-all' }}>
-              협업 문의, 피드백, 혹은 그냥 안녕이라도 환영합니다.
+              복잡한 문제를 구조적으로 풀고, 더 빠르고 안정적인 서비스를 만드는 일에 기여하고 싶습니다.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 flex-shrink-0">
