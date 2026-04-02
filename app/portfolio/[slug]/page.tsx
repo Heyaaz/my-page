@@ -7,6 +7,14 @@ import MarkdownRenderer from '@/components/ui/MarkdownRenderer'
 
 type Props = { params: Promise<{ slug: string }> }
 
+function normalizeSlug(slug: string) {
+  try {
+    return decodeURIComponent(slug)
+  } catch {
+    return slug
+  }
+}
+
 export const dynamicParams = true
 
 export async function generateStaticParams() {
@@ -21,14 +29,16 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const project = await getProjectBySlug(slug)
+  const normalizedSlug = normalizeSlug(slug)
+  const project = await getProjectBySlug(normalizedSlug)
   if (!project) return {}
   return buildPostMetadata(project.title, project.summary, project.cover_image_url ?? undefined)
 }
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params
-  const project = await getProjectBySlug(slug)
+  const normalizedSlug = normalizeSlug(slug)
+  const project = await getProjectBySlug(normalizedSlug)
   if (!project) notFound()
 
   return (

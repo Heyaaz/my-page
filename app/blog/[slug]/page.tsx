@@ -8,6 +8,14 @@ import MarkdownRenderer from '@/components/ui/MarkdownRenderer'
 
 type Props = { params: Promise<{ slug: string }> }
 
+function normalizeSlug(slug: string) {
+  try {
+    return decodeURIComponent(slug)
+  } catch {
+    return slug
+  }
+}
+
 export const dynamicParams = true
 
 export async function generateStaticParams() {
@@ -22,14 +30,16 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const post = await getPostBySlug(slug)
+  const normalizedSlug = normalizeSlug(slug)
+  const post = await getPostBySlug(normalizedSlug)
   if (!post) return {}
   return buildPostMetadata(post.title, post.excerpt, post.cover_image_url ?? undefined)
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
-  const post = await getPostBySlug(slug)
+  const normalizedSlug = normalizeSlug(slug)
+  const post = await getPostBySlug(normalizedSlug)
   if (!post) notFound()
 
   return (
