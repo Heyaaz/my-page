@@ -4,6 +4,7 @@ import { getPostBySlug } from '@/lib/supabase/queries'
 import { createStaticClient } from '@/lib/supabase/static'
 import { buildPostMetadata } from '@/lib/seo/metadata'
 import { formatDate } from '@/lib/utils/date'
+import { getBlogCategoryStyle } from '@/lib/blog/categories'
 import MarkdownRenderer from '@/components/ui/MarkdownRenderer'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -42,10 +43,15 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await getPostBySlug(normalizedSlug)
   if (!post) notFound()
 
+  const categoryStyle = getBlogCategoryStyle(post.category)
+
   return (
     <article className="max-w-2xl mx-auto px-6 py-20">
       {post.category && (
-        <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-4">
+        <p className={[
+          'mb-4 text-xs font-medium uppercase tracking-widest',
+          categoryStyle.text,
+        ].join(' ')}>
           {post.category}
         </p>
       )}

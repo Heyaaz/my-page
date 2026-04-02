@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getFeaturedProjects, getRecentPosts } from '@/lib/supabase/queries'
 import { formatDate } from '@/lib/utils/date'
+import { getBlogCategoryStyle } from '@/lib/blog/categories'
 import { PortfolioProjectSummary } from '@/types/portfolio'
 import { BlogPostSummary } from '@/types/blog'
 
@@ -250,6 +251,8 @@ function ProjectHighlightCard({ project }: { project: PortfolioProjectSummary })
 }
 
 function BlogHighlightRow({ post }: { post: BlogPostSummary }) {
+  const categoryStyle = getBlogCategoryStyle(post.category)
+
   return (
     <Link href={`/blog/${post.slug}`} className="group block py-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
@@ -260,7 +263,7 @@ function BlogHighlightRow({ post }: { post: BlogPostSummary }) {
           <p className="text-sm text-neutral-500 line-clamp-1">{post.excerpt}</p>
         </div>
         <div className="flex items-center gap-4 text-xs text-neutral-400 flex-shrink-0">
-          {post.category && <span>{post.category}</span>}
+          {post.category && <span className={['font-medium', categoryStyle.text].join(' ')}>{post.category}</span>}
           {post.published_at && (
             <span>{formatDate(post.published_at)}</span>
           )}

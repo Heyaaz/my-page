@@ -3,12 +3,14 @@ import Image from 'next/image'
 import { BlogPostSummary } from '@/types/blog'
 import { formatDate } from '@/lib/utils/date'
 import { getBlogPreviewImage, getBlogPreviewText } from '@/lib/blog/preview'
+import { getBlogCategoryStyle } from '@/lib/blog/categories'
 
 const DEFAULT_BLOG_THUMBNAIL = '/blog-default-thumb.svg'
 
 export default function BlogCard({ post }: { post: BlogPostSummary }) {
   const previewImage = getBlogPreviewImage(post) ?? DEFAULT_BLOG_THUMBNAIL
   const previewText = getBlogPreviewText(post)
+  const categoryStyle = getBlogCategoryStyle(post.category)
 
   return (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
@@ -23,7 +25,10 @@ export default function BlogCard({ post }: { post: BlogPostSummary }) {
           />
           {post.category && (
             <div className="absolute left-4 top-4">
-              <span className="inline-flex rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-neutral-700 shadow-sm ring-1 ring-black/5 backdrop-blur-sm">
+              <span className={[
+                'inline-flex rounded-full px-3 py-1 text-xs font-medium shadow-sm ring-1 backdrop-blur-sm',
+                categoryStyle.badge,
+              ].join(' ')}>
                 {post.category}
               </span>
             </div>
@@ -32,7 +37,7 @@ export default function BlogCard({ post }: { post: BlogPostSummary }) {
 
         <div className="flex flex-1 flex-col p-6">
           <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-400">
-            {post.category && <span>{post.category}</span>}
+            {post.category && <span className={['font-medium', categoryStyle.text].join(' ')}>{post.category}</span>}
             {post.published_at && <span>{formatDate(post.published_at)}</span>}
             {post.reading_time && <span>{post.reading_time}분</span>}
           </div>
