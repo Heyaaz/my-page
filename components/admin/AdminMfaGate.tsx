@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -11,6 +10,9 @@ type TotpFactor = {
   factor_type: 'totp'
   status: 'verified' | 'unverified'
   friendly_name?: string
+  created_at?: string
+  updated_at?: string
+  last_challenged_at?: string
 }
 
 type EnrollmentState = {
@@ -19,6 +21,14 @@ type EnrollmentState = {
   secret: string
   uri: string
 } | null
+
+function getMfaErrorMessage(error: unknown, fallback: string) {
+  const status = typeof error === 'object' && error !== null && 'status' in error ? (error as { status?: number }).status : undefined
+  if (status === 422) {
+    return 'Supabase에서 TOTP MFA가 아직 활성화되지 않았을 가능성이 큽니다. Dashboard > Authentication > Multi-Factor에서 TOTP를 켜고 다시 시도해주세요.'
+  }
+  return fallback
+}
 
 type TotpEnrollment = {
   id: string
@@ -58,12 +68,12 @@ export default function AdminMfaGate() {
       }
 
       if (factorError) {
-        setError('2단계 인증 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.')
+        setError(getMfaErrorMessage(factorError, '2단계 인증 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'))
         setLoading(false)
         return
       }
 
-      const existingFactor = (factorData?.totp?.[0] ?? null) as TotpFactor | null
+      const existingFactor = ((factorData?.all ?? []).find((factor) => factor.factor_type === 'totp') ?? null) as TotpFactor | null
       setVerifiedFactor(existingFactor)
       setLoading(false)
     }
@@ -89,7 +99,18 @@ export default function AdminMfaGate() {
     const enrolled = data as TotpEnrollment | null
 
     if (error || !enrolled || enrolled.type !== 'totp') {
-      setError('2단계 인증 등록을 시작하지 못했습니다. Supabase Auth의 MFA 설정을 확인해주세요.')
+      if ((error as { code?: string } | null)?.code === 'mfa_factor_name_conflict') {
+        const { data: factorData } = await supabase.auth.mfa.listFactors()
+        const existingFactor = ((factorData?.all ?? []).find((factor) => factor.factor_type === 'totp' && factor.friendly_name === 'Admin access') ?? null) as TotpFactor | null
+
+        if (existingFactor) {
+          setVerifiedFactor(existingFactor)
+          setError('이미 등록된 Admin access 인증기가 있습니다. 인증 앱의 6자리 코드를 입력해주세요.')
+          return
+        }
+      }
+
+      setError(getMfaErrorMessage(error, '2단계 인증 등록을 시작하지 못했습니다. Supabase Auth의 MFA 설정을 확인해주세요.'))
       return
     }
 
@@ -117,7 +138,7 @@ export default function AdminMfaGate() {
     setVerifying(false)
 
     if (error) {
-      setError('2단계 인증 코드 확인에 실패했습니다. 코드를 다시 확인해주세요.')
+      setError(getMfaErrorMessage(error, '2단계 인증 코드 확인에 실패했습니다. 코드를 다시 확인해주세요.'))
       return
     }
 
@@ -147,7 +168,12 @@ export default function AdminMfaGate() {
             {verifiedFactor ? (
               <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700">
                 <p className="font-medium text-neutral-900 mb-1">등록된 인증기 발견</p>
-                <p>{verifiedFactor.friendly_name ?? 'Admin access'} 계정의 코드를 입력하세요.</p>
+                <p>{verifiedFactor.friendly_name ?? 'Admin access'} 계정의 6자리 코드를 입력하세요.</p>
+                {verifiedFactor.status === 'unverified' && (
+                  <p className="mt-2 text-xs text-amber-700">
+                    이전 등록이 완료되지 않았습니다. 이미 앱에 추가한 secret이 있다면 그 코드를 입력해 검증을 완료하세요.
+                  </p>
+                )}
               </div>
             ) : enrollment ? (
               <div className="space-y-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700">
@@ -158,7 +184,8 @@ export default function AdminMfaGate() {
                   </p>
                 </div>
                 <div className="rounded-2xl bg-white p-4 border border-neutral-200 inline-block">
-                  <Image src={enrollment.qrCode} alt="Admin TOTP QR" width={160} height={160} unoptimized className="h-40 w-40" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={enrollment.qrCode} alt="Admin TOTP QR" width="160" height="160" className="h-40 w-40" />
                 </div>
                 <div>
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 mb-2">Secret</p>
@@ -219,19 +246,6 @@ export default function AdminMfaGate() {
         )}
       </div>
 
-      <div className="rounded-[2rem] border border-neutral-200 bg-neutral-50 p-8">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 mb-3">
-          Security Notes
-        </p>
-        <h3 className="text-lg font-semibold tracking-tight text-neutral-950 mb-4">
-          관리자 페이지 보안 메모
-        </h3>
-        <ul className="space-y-3 text-sm text-neutral-600 leading-relaxed">
-          <li>• 2단계 인증은 admin 접근 시점에 AAL2를 요구합니다.</li>
-          <li>• 운영에서는 RLS 정책으로 일반 사용자의 write/delete를 반드시 막아야 합니다.</li>
-          <li>• 동일 브라우저 세션에서도 MFA가 풀리면 admin editor는 다시 차단됩니다.</li>
-        </ul>
-      </div>
     </div>
   )
 }

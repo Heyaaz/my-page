@@ -34,7 +34,7 @@ export default function AdminLoginForm() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_360px]">
+    <div className="max-w-3xl">
       <div className="rounded-[2rem] border border-neutral-200 bg-white p-8 shadow-sm">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 mb-3">
           Admin Login
@@ -42,10 +42,6 @@ export default function AdminLoginForm() {
         <h2 className="text-2xl font-bold tracking-tight text-neutral-950 mb-3">
           관리자 로그인
         </h2>
-        <p className="text-sm text-neutral-500 leading-relaxed mb-8 max-w-lg">
-          Supabase Auth에 등록된 이메일/비밀번호로 로그인해야 admin 작성 화면에 접근할 수 있습니다.
-        </p>
-
         <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
           <div>
             <label htmlFor="email" className="block text-xs font-medium text-neutral-500 mb-1">
@@ -93,20 +89,8 @@ export default function AdminLoginForm() {
         </form>
       </div>
 
-      <div className="rounded-[2rem] border border-neutral-200 bg-neutral-50 p-8">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 mb-3">
-          Notes
-        </p>
-        <h3 className="text-lg font-semibold tracking-tight text-neutral-950 mb-4">
-          로그인 전에 확인할 것
-        </h3>
-        <ul className="space-y-3 text-sm text-neutral-600 leading-relaxed">
-          <li>• Supabase Auth에 admin 계정이 생성되어 있어야 합니다.</li>
-          <li>• 운영 시에는 <code className="rounded bg-white px-1.5 py-0.5 text-[0.85em]">ADMIN_EMAILS</code>로 허용 이메일을 제한하는 것이 좋습니다.</li>
-          <li>• 실제 데이터 보호는 앱 UI뿐 아니라 Supabase RLS 정책까지 함께 잡아야 안전합니다.</li>
-        </ul>
-      </div>
     </div>
   )
 }
+
 

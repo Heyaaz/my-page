@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 export default function Footer() {
   return (
     <footer className="border-t border-neutral-100 mt-24">
@@ -9,13 +7,13 @@ export default function Footer() {
         </p>
         <div className="flex items-center gap-6">
           <a
-            href="mailto:your@email.com"
+            href="mailto:pion0458@gmail.com"
             className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
           >
             Email
           </a>
           <a
-            href="https://github.com/yourgithub"
+            href="https://github.com/Heyaaz"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"

@@ -89,20 +89,6 @@ export default async function AdminPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-20">
-      <div className="mb-12 max-w-2xl">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 mb-3">
-          Admin
-        </p>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-neutral-950 mb-4 leading-tight">
-          콘텐츠를 빠르게 쓰고,
-          <br />
-          안전하게 반영합니다.
-        </h1>
-        <p className="text-neutral-500 leading-relaxed">
-          Supabase Auth와 MFA를 거친 관리자만 블로그와 포트폴리오 콘텐츠를 관리합니다.
-          홈과 동일한 디자인 언어를 유지하되, 관리자 화면은 더 차분하고 구조적으로 구성합니다.
-        </p>
-      </div>
 
       {!user ? (
         <AdminLoginForm />
