@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import MarkdownRenderer from '@/components/ui/MarkdownRenderer'
 import { inputCls } from './admin-styles'
+import { DEFAULT_BLOG_CATEGORIES } from '@/lib/blog/categories'
 import { formatDate } from '@/lib/utils/date'
 import type { BlogPost } from '@/types/blog'
 import type { PortfolioProject } from '@/types/portfolio'
@@ -655,9 +656,15 @@ export default function AdminEditor() {
                         <input
                           value={blog.category}
                           onChange={(event) => setBlog((current) => ({ ...current, category: event.target.value }))}
-                          placeholder="개발, 회고, 기록..."
+                          list="blog-category-options"
+                          placeholder="기록, 회고, 생각, 기술..."
                           className={inputCls}
                         />
+                        <datalist id="blog-category-options">
+                          {DEFAULT_BLOG_CATEGORIES.map((category) => (
+                            <option key={category} value={category} />
+                          ))}
+                        </datalist>
                       </Field>
                     </div>
                     <Field label="요약">
