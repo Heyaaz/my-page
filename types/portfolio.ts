@@ -10,7 +10,7 @@ export type PortfolioProject = {
   role: string | null
   stack: string[]
   duration: string | null
-  status: string | null
+  status: 'work' | 'side' | null
   project_url: string | null
   github_url: string | null
   outcome: string | null
@@ -24,5 +24,5 @@ export type PortfolioProject = {
 
 export type PortfolioProjectSummary = Pick<
   PortfolioProject,
-  'id' | 'slug' | 'title' | 'summary' | 'cover_image_url' | 'role' | 'stack' | 'is_featured' | 'published_at'
+  'id' | 'slug' | 'title' | 'summary' | 'cover_image_url' | 'role' | 'stack' | 'duration' | 'outcome' | 'status' | 'is_featured' | 'published_at'
 > & { tags?: Tag[] }

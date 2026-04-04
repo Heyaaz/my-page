@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import MarkdownRenderer from '@/components/ui/MarkdownRenderer'
 import { inputCls } from './admin-styles'
 import { DEFAULT_BLOG_CATEGORIES } from '@/lib/blog/categories'
+import { PROJECT_TYPE_OPTIONS } from '@/lib/portfolio/project-type'
 import { formatDate } from '@/lib/utils/date'
 import type { BlogPost } from '@/types/blog'
 import type { PortfolioProject } from '@/types/portfolio'
@@ -32,6 +33,7 @@ type PortfolioFormState = {
   role: string
   stack: string
   duration: string
+  status: 'work' | 'side' | ''
   project_url: string
   github_url: string
   outcome: string
@@ -50,7 +52,7 @@ type BlogAdminItem = Pick<
 
 type PortfolioAdminItem = Pick<
   PortfolioProject,
-  'id' | 'title' | 'slug' | 'summary' | 'role' | 'published_at' | 'is_featured' | 'is_published'
+  'id' | 'title' | 'slug' | 'summary' | 'role' | 'status' | 'published_at' | 'is_featured' | 'is_published'
 > & {
   updated_at?: string
 }
@@ -75,6 +77,7 @@ const defaultPortfolio: PortfolioFormState = {
   role: '',
   stack: '',
   duration: '',
+  status: '',
   project_url: '',
   github_url: '',
   outcome: '',
@@ -340,7 +343,7 @@ export default function AdminEditor() {
     setLoadingEntry(true)
     const { data, error } = await supabase
       .from('portfolio_projects')
-      .select('id, title, slug, summary, role, stack, duration, project_url, github_url, outcome, content, is_featured, is_published, published_at')
+      .select('id, title, slug, summary, role, stack, duration, status, project_url, github_url, outcome, content, is_featured, is_published, published_at')
       .eq('id', id)
       .single()
 
@@ -362,6 +365,7 @@ export default function AdminEditor() {
       role: data.role ?? '',
       stack: Array.isArray(data.stack) ? data.stack.join(', ') : '',
       duration: data.duration ?? '',
+      status: data.status ?? '',
       project_url: data.project_url ?? '',
       github_url: data.github_url ?? '',
       outcome: data.outcome ?? '',
@@ -419,6 +423,7 @@ export default function AdminEditor() {
         ? portfolio.stack.split(',').map((value) => value.trim()).filter(Boolean)
         : [],
       duration: portfolio.duration || null,
+      status: portfolio.status || null,
       project_url: portfolio.project_url || null,
       github_url: portfolio.github_url || null,
       outcome: portfolio.outcome || null,
@@ -757,6 +762,20 @@ export default function AdminEditor() {
                       </Field>
                     </div>
                     <div className="grid gap-4 md:grid-cols-2">
+                      <Field label="프로젝트 유형">
+                        <select
+                          value={portfolio.status}
+                          onChange={(event) => setPortfolio((current) => ({ ...current, status: event.target.value as 'work' | 'side' | '' }))}
+                          className={inputCls}
+                        >
+                          <option value="">선택 안 함</option>
+                          {PROJECT_TYPE_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </Field>
                       <Field label="프로젝트 URL">
                         <input
                           value={portfolio.project_url}
