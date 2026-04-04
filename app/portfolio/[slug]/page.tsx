@@ -41,6 +41,8 @@ export default async function ProjectPage({ params }: Props) {
   const project = await getProjectBySlug(normalizedSlug)
   if (!project) notFound()
 
+  const stack = Array.isArray(project.stack) ? project.stack : []
+
   return (
     <article className="max-w-3xl mx-auto px-6 py-20">
       <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-4">
@@ -49,7 +51,7 @@ export default async function ProjectPage({ params }: Props) {
       <h1 className="text-3xl font-bold tracking-tight mb-4">{project.title}</h1>
       <p className="text-lg text-neutral-500 mb-8">{project.summary}</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 p-6 bg-neutral-50 rounded-xl text-sm">
+      <div className="grid grid-cols-2 gap-4 rounded-xl bg-neutral-50 p-6 text-sm md:grid-cols-4 mb-12">
         {project.role && (
           <div>
             <p className="text-xs text-neutral-400 mb-1">역할</p>
@@ -62,10 +64,10 @@ export default async function ProjectPage({ params }: Props) {
             <p className="font-medium">{project.duration}</p>
           </div>
         )}
-        {project.stack.length > 0 && (
+        {stack.length > 0 && (
           <div className="col-span-2">
             <p className="text-xs text-neutral-400 mb-1">스택</p>
-            <p className="font-medium">{project.stack.join(', ')}</p>
+            <p className="font-medium">{stack.join(', ')}</p>
           </div>
         )}
       </div>
@@ -75,19 +77,19 @@ export default async function ProjectPage({ params }: Props) {
       </div>
 
       {project.outcome && (
-        <div className="mt-10 p-6 border-l-4 border-neutral-900 bg-neutral-50 rounded-r-xl">
+        <div className="mt-10 rounded-r-xl border-l-4 border-neutral-900 bg-neutral-50 p-6">
           <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-2">결과</p>
-          <p className="text-neutral-700 leading-relaxed">{project.outcome}</p>
+          <p className="leading-relaxed text-neutral-700">{project.outcome}</p>
         </div>
       )}
 
-      <div className="flex gap-4 flex-wrap mt-10">
+      <div className="mt-10 flex flex-wrap gap-4">
         {project.project_url && (
           <a
             href={project.project_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2.5 bg-neutral-900 text-white text-sm rounded-full hover:bg-neutral-700 transition-colors"
+            className="rounded-full bg-neutral-900 px-5 py-2.5 text-sm text-white transition-colors hover:bg-neutral-700"
           >
             프로젝트 보기 →
           </a>
@@ -97,7 +99,7 @@ export default async function ProjectPage({ params }: Props) {
             href={project.github_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2.5 border border-neutral-300 text-neutral-700 text-sm rounded-full hover:border-neutral-600 transition-colors"
+            className="rounded-full border border-neutral-300 px-5 py-2.5 text-sm text-neutral-700 transition-colors hover:border-neutral-600"
           >
             GitHub
           </a>
