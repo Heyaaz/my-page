@@ -89,13 +89,6 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div>
-          <h2 className="text-lg font-semibold mb-3">작업 방식</h2>
-          <p className="text-neutral-600 leading-relaxed">
-            먼저 구조를 파악하고, 병목과 리스크를 구체적으로 확인한 뒤, 작은 단위로 검증하며 개선합니다.
-            작동하는 코드에서 멈추지 않고, 사용자에게 실제로 더 나은 선택인지까지 다시 살펴보는 편입니다.
-          </p>
-        </div>
       </section>
     </div>
   )
