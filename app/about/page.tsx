@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'About',
-  description: '구조적으로 문제를 파악하고 성능과 안정성을 개선하는 백엔드 개발자 Heeyaa를 소개합니다.',
+  description: '구조적으로 문제를 파악하고 성능과 안정성을 개선하는 백엔드 개발자 HeeJae를 소개합니다.',
 }
 
 export default function AboutPage() {

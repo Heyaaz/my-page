@@ -30,7 +30,7 @@ export default async function HomePage() {
             className="mb-12 max-w-xl text-lg leading-relaxed text-neutral-500 md:text-xl"
             style={{ wordBreak: 'keep-all' }}
           >
-            백엔드 개발자 Heeyaa입니다. 복잡한 문제를 구조적으로 풀고,
+            백엔드 개발자 HeeJae입니다. 복잡한 문제를 구조적으로 풀고,
             안정적으로 운영 가능한 서비스를 고민하고 구현합니다.
           </p>
           <div className="flex flex-wrap gap-3">
