@@ -4,6 +4,53 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --detail-panel-bg: #ffffff;
+  --detail-panel-border: #e5e5e5;
+  --detail-panel-foreground: #171717;
+  --detail-muted: #a3a3a3;
+  --detail-divider: #f5f5f5;
+  --detail-soft-bg: #fafafa;
+  --detail-soft-foreground: #525252;
+  --detail-highlight-border: #d4d4d4;
+  --detail-highlight-bg: #fafafa;
+  --shell-primary: #171717;
+  --shell-primary-foreground: #ffffff;
+  --prose-body: #404040;
+  --prose-headings: #171717;
+  --prose-links: #171717;
+  --prose-bold: #171717;
+  --prose-quotes: #525252;
+  --prose-quote-borders: #d4d4d4;
+  --prose-code: #262626;
+  --prose-code-bg: #f5f5f5;
+  --prose-pre-bg: #fafafa;
+  --prose-pre-border: #e5e5e5;
+  --prose-hr: #f5f5f5;
+}
+
+.detail-theme-scope[data-detail-theme='dark'] {
+  --detail-panel-bg: #171717;
+  --detail-panel-border: #404040;
+  --detail-panel-foreground: #fafafa;
+  --detail-muted: #a3a3a3;
+  --detail-divider: #262626;
+  --detail-soft-bg: #262626;
+  --detail-soft-foreground: #e5e5e5;
+  --detail-highlight-border: #525252;
+  --detail-highlight-bg: #1f1f1f;
+  --shell-primary: #fafafa;
+  --shell-primary-foreground: #171717;
+  --prose-body: #d4d4d4;
+  --prose-headings: #fafafa;
+  --prose-links: #fafafa;
+  --prose-bold: #fafafa;
+  --prose-quotes: #d4d4d4;
+  --prose-quote-borders: #525252;
+  --prose-code: #fafafa;
+  --prose-code-bg: #262626;
+  --prose-pre-bg: #0f0f0f;
+  --prose-pre-border: #404040;
+  --prose-hr: #262626;
 }
 
 @theme inline {

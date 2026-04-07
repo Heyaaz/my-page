@@ -6,6 +6,7 @@ import { buildPostMetadata } from '@/lib/seo/metadata'
 import { formatDate } from '@/lib/utils/date'
 import { getBlogCategoryStyle } from '@/lib/blog/categories'
 import MarkdownRenderer from '@/components/ui/MarkdownRenderer'
+import DetailThemeScope from '@/components/ui/DetailThemeScope'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -46,24 +47,26 @@ export default async function BlogPostPage({ params }: Props) {
   const categoryStyle = getBlogCategoryStyle(post.category)
 
   return (
-    <article className="max-w-2xl mx-auto px-6 py-20">
-      {post.category && (
-        <p className={[
-          'mb-4 text-xs font-medium uppercase tracking-widest',
-          categoryStyle.text,
-        ].join(' ')}>
-          {post.category}
-        </p>
-      )}
-      <h1 className="text-3xl font-bold tracking-tight mb-4">{post.title}</h1>
-      <div className="flex items-center gap-4 text-sm text-neutral-400 mb-12 pb-8 border-b border-neutral-100">
-        {post.published_at && (
-          <span>{formatDate(post.published_at)}</span>
+    <DetailThemeScope mobileMaxWidthClass="max-w-2xl">
+      <article className="max-w-2xl mx-auto px-6 py-20 text-[color:var(--detail-panel-foreground)] transition-colors duration-300">
+        {post.category && (
+          <p className={[
+            'mb-4 text-xs font-medium uppercase tracking-widest',
+            categoryStyle.text,
+          ].join(' ')}>
+            {post.category}
+          </p>
         )}
-        {post.reading_time && <span>{post.reading_time}분 읽기</span>}
-      </div>
+        <h1 className="text-3xl font-bold tracking-tight mb-4">{post.title}</h1>
+        <div className="flex items-center gap-4 text-sm text-[color:var(--detail-muted)] mb-12 pb-8 border-b border-[color:var(--detail-divider)] transition-colors duration-300">
+          {post.published_at && (
+            <span>{formatDate(post.published_at)}</span>
+          )}
+          {post.reading_time && <span>{post.reading_time}분 읽기</span>}
+        </div>
 
-      <MarkdownRenderer content={post.content} />
-    </article>
+        <MarkdownRenderer content={post.content} />
+      </article>
+    </DetailThemeScope>
   )
 }
