@@ -17,7 +17,7 @@ export default async function HomePage() {
       <section className="mx-auto flex min-h-[90svh] max-w-5xl flex-col justify-center px-6 pt-12 pb-24">
         <div className="max-w-3xl">
           <p className="mb-8 text-xs font-medium uppercase tracking-[0.2em] text-neutral-400">
-            Backend Developer
+            Developer
           </p>
           <h1
             className="mb-8 text-5xl font-bold leading-[1.05] tracking-tighter text-neutral-950 md:text-7xl"
@@ -30,7 +30,7 @@ export default async function HomePage() {
             className="mb-12 max-w-xl text-lg leading-relaxed text-neutral-500 md:text-xl"
             style={{ wordBreak: 'keep-all' }}
           >
-            백엔드 개발자 HeeJae입니다. 복잡한 문제를 구조적으로 풀고,
+            개발자 HeeJae입니다. 복잡한 문제를 구조적으로 풀고,
             안정적으로 운영 가능한 서비스를 고민하고 구현합니다.
           </p>
           <div className="flex flex-wrap gap-3">
