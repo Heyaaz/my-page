@@ -16,7 +16,7 @@ export default function AboutPage() {
           <h2 className="text-lg font-semibold mb-3">나는 누구인가</h2>
           <div className="space-y-4 text-neutral-600 leading-relaxed">
             <p>
-              어제 배운 기술이 오늘 팀의 성과로 이어질 때 가장 큰 열정을 느끼는 백엔드 개발자입니다.
+              어제 배운 기술이 오늘 팀의 성과로 이어질 때 가장 큰 열정을 느끼는 개발자입니다.
               실제 서비스에서 병목과 구조적 문제를 찾고, 더 빠르고 안정적인 시스템으로 바꾸는 과정에 가장 많은 에너지를 씁니다.
             </p>
             <p>
@@ -53,8 +53,8 @@ export default function AboutPage() {
           <h2 className="text-lg font-semibold mb-3">관심 분야</h2>
           <ul className="space-y-2 text-neutral-600 leading-relaxed">
             <li>— 백엔드 시스템 설계와 성능 최적화</li>
-            <li>— 프로덕트 개발과 서비스 구조 개선</li>
-            <li>— AI 활용 워크플로우와 개발자 생산성 도구</li>
+            <li>— 프로덕트 개발과 서비스 문제 해결</li>
+            <li>— AI를 활용한 워크플로우와 개발자 생산성 도구</li>
           </ul>
         </div>
 
