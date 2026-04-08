@@ -9,7 +9,7 @@ export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-20">
       <h1 className="text-3xl font-bold tracking-tight mb-2">About</h1>
-      <p className="text-neutral-500 mb-12">구조적으로 문제를 파악하고 성능과 안정성을 개선하는 백엔드 개발자입니다.</p>
+      <p className="text-neutral-500 mb-12">구조적으로 문제를 파악하고 성능과 안정성을 개선하는 개발자입니다.</p>
 
       <section className="space-y-12">
         <div>
