@@ -1,7 +1,18 @@
 'use client'
 
 import ReactMarkdown from 'react-markdown'
+import type { Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+
+const components: Components = {
+  a: (props) => (
+    <a
+      {...props}
+      target="_blank"
+      rel="noopener noreferrer"
+    />
+  ),
+}
 
 export default function MarkdownRenderer({ content }: { content: string }) {
   if (!content) return null
@@ -23,7 +34,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
       prose-pre:rounded-xl prose-pre:border prose-pre:border-[color:var(--prose-pre-border)]
       prose-img:rounded-xl prose-li:text-[color:var(--prose-body)]
     ">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>{content}</ReactMarkdown>
     </div>
   )
 }
