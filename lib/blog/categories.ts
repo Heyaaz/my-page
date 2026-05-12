@@ -1,5 +1,3 @@
-import type { BlogPostSummary } from '@/types/blog'
-
 export const DEFAULT_BLOG_CATEGORIES = ['기록', '회고', '생각', '기술'] as const
 export const ALL_BLOG_CATEGORIES_LABEL = '전체'
 
@@ -25,19 +23,6 @@ const BLOG_CATEGORY_STYLES: Record<string, { badge: string; text: string }> = {
 const DEFAULT_CATEGORY_STYLE = {
   badge: 'bg-neutral-100 text-neutral-700 ring-neutral-200/80',
   text: 'text-neutral-600',
-}
-
-export function getBlogCategories(posts: BlogPostSummary[]) {
-  const categories = new Set<string>(DEFAULT_BLOG_CATEGORIES)
-
-  for (const post of posts) {
-    const category = post.category?.trim()
-    if (category) {
-      categories.add(category)
-    }
-  }
-
-  return Array.from(categories)
 }
 
 export function getBlogCategoryStyle(category: string | null | undefined) {
