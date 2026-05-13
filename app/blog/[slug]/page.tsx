@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { getPostBySlug } from '@/lib/supabase/queries'
-import { createStaticClient } from '@/lib/supabase/static'
 import { buildPostMetadata } from '@/lib/seo/metadata'
 import { formatDate } from '@/lib/utils/date'
 import { getBlogCategoryStyle } from '@/lib/blog/categories'
@@ -16,18 +15,6 @@ function normalizeSlug(slug: string) {
   } catch {
     return slug
   }
-}
-
-export const dynamicParams = true
-
-export async function generateStaticParams() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return []
-  const supabase = createStaticClient()
-  const { data } = await supabase
-    .from('blog_posts')
-    .select('slug')
-    .eq('is_published', true)
-  return (data ?? []).map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
