@@ -3,19 +3,63 @@
 import ReactMarkdown from 'react-markdown'
 import type { Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { createHeadingId } from '@/lib/markdown/headings'
 
-const components: Components = {
-  a: (props) => (
-    <a
-      {...props}
-      target="_blank"
-      rel="noopener noreferrer"
-    />
-  ),
+function getNodeText(node: unknown): string {
+  if (typeof node === 'string' || typeof node === 'number') return String(node)
+  if (Array.isArray(node)) return node.map(getNodeText).join('')
+  if (!node || typeof node !== 'object') return ''
+
+  const maybeNode = node as { props?: { children?: unknown } }
+  return getNodeText(maybeNode.props?.children)
 }
 
 export default function MarkdownRenderer({ content }: { content: string }) {
   if (!content) return null
+
+  const seenHeadingIds = new Map<string, number>()
+  const getHeadingId = (children: unknown) => {
+    const baseId = createHeadingId(getNodeText(children))
+    const count = seenHeadingIds.get(baseId) ?? 0
+    seenHeadingIds.set(baseId, count + 1)
+
+    return count === 0 ? baseId : `${baseId}-${count + 1}`
+  }
+
+  const components: Components = {
+    a: (props) => (
+      <a
+        {...props}
+        target="_blank"
+        rel="noopener noreferrer"
+      />
+    ),
+    h1: ({ children, node, ...props }) => {
+      void node
+      return (
+        <h1 id={getHeadingId(children)} className="scroll-mt-24" {...props}>
+          {children}
+        </h1>
+      )
+    },
+    h2: ({ children, node, ...props }) => {
+      void node
+      return (
+        <h2 id={getHeadingId(children)} className="scroll-mt-24" {...props}>
+          {children}
+        </h2>
+      )
+    },
+    h3: ({ children, node, ...props }) => {
+      void node
+      return (
+        <h3 id={getHeadingId(children)} className="scroll-mt-24" {...props}>
+          {children}
+        </h3>
+      )
+    },
+  }
+
   return (
     <div className="prose max-w-none
       [--tw-prose-body:var(--prose-body)] [--tw-prose-headings:var(--prose-headings)]
