@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getFeaturedProjects, getRecentPosts } from '@/lib/supabase/queries'
+import { getFeaturedPosts, getFeaturedProjects } from '@/lib/supabase/queries'
 import { formatDate } from '@/lib/utils/date'
 import { getBlogCategoryStyle } from '@/lib/blog/categories'
 import ProjectCard from '@/components/portfolio/ProjectCard'
@@ -8,7 +8,7 @@ import { BlogPostSummary } from '@/types/blog'
 export default async function HomePage() {
   const [projects, posts] = await Promise.all([
     getFeaturedProjects(6),
-    getRecentPosts(3),
+    getFeaturedPosts(3),
   ])
 
   return (
@@ -97,7 +97,7 @@ export default async function HomePage() {
               Writing
             </p>
             <h2 className="text-2xl font-bold tracking-tight text-neutral-950">
-              최근 글
+              대표 글
             </h2>
           </div>
           <Link
@@ -109,7 +109,7 @@ export default async function HomePage() {
         </div>
 
         {posts.length === 0 ? (
-          <EmptyState label="첫 번째 글을 준비 중입니다." />
+          <EmptyState label="대표 글을 준비 중입니다." />
         ) : (
           <div className="divide-y divide-neutral-100">
             {posts.map((post) => (
